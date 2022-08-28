@@ -174,3 +174,104 @@ sys     0m3.259s
 
 
 througy docker exec it is 15 seconds of 100% cpu busy per 100 queries
+
+
+
+
+
+config:
+
+each docker needs unique port for rpc if used and for udp trnasport
+
+
+ubuntu@east:~/transmission$ cat ./client0*/docker-compose.yml | egrep 'container_name|ports|514'
+    container_name: transmission01
+    ports:
+      - 51409:51409
+      - 51409:51409/udp
+    container_name: transmission02
+    ports:
+      - 51410:51410
+      - 51410:51410/udp
+    container_name: transmission03
+    ports:
+      - 51411:51411
+      - 51411:51411/udp
+    container_name: transmission04
+    ports:
+      - 51412:51412
+      - 51412:51412/udp
+    container_name: transmission05
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+
+
+
+
+docker --scale option would be nice here but due to volume naming: https://github.com/docker/compose/issues/4579
+
+its not supported
+
+
+do it with python instead
+
+
+user@server:~/transmission/client01$ python3
+Python 3.8.10 (default, Jun 22 2022, 20:18:18)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> import sys
+>>> with open('docker-compose.yml') as file:
+...     filedata = file.read()
+...
+>>> filedata = filedata.replace('9091', 'blue')
+>>> print(filedata)
+---
+version: "2.1"
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission01
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USER=username #optional
+      - PASS=password #optional
+      - WHITELIST=127.0.0.1 #optional
+    volumes:
+      - /fourdiskpool/docker01/config01:/config
+      - /fourdiskpool/docker01/torrent_completed:/downloads
+      - /fourdiskpool/docker01/torrent_incoming/client01:/watch
+    ports:
+      - blue:blue
+      - 51409:51409
+      - 51409:51409/udp
+    restart: unless-stopped
+
+>>> with open('test.txt', 'w') as file:
+...     file.write(filedata)
+...
+609
+>>> quit()
+
+
+
+
+
+
+
+user@ubnt:/mnt/nas/foss_transmission_tool$ cat foss_feed.txt | grep link | grep '.torrent' | head -n10
+        <link>https://fosstorrents.com/feed/torrents.xml</link>
+            <link>https://fosstorrents.com/files/0ad-0.0.25b-alpha-osx64.dmg.torrent</link>
+            <link>https://fosstorrents.com/files/0ad-0.0.25b-alpha-win32.exe.torrent</link>
+            <link>https://fosstorrents.com/files/0ad-0.0.25b-alpha-unix-build.tar.gz.torrent</link>
+            <link>https://fosstorrents.com/files/0ad-0.0.25b-alpha-unix-build.tar.xz.torrent</link>
+            <link>https://fosstorrents.com/files/0ad-0.0.25b-alpha-unix-data.tar.gz.torrent</link>
+            <link>https://fosstorrents.com/files/0ad-0.0.25b-alpha-unix-data.tar.xz.torrent</link>
+            <link>https://fosstorrents.com/files/absolute64-20220724.iso.torrent</link>
+            <link>https://fosstorrents.com/files/absolute64-live-current.iso.torrent</link>
+            <link>https://fosstorrents.com/files/alpine-standard-3.16.2-aarch64.iso.torrent</link>
+

@@ -1,0 +1,21 @@
+---
+version: "2.1"
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - USER=username #optional
+      - PASS=password #optional
+      - WHITELIST=127.0.0.1 #optional
+    volumes:
+      - UNIQUEROOTPATH:/config # only seen by this container
+      - SHAREDROOTPATH:/downloads # same on all containers
+    ports:
+      - RPCPORT:RPCPORT
+      - TCPPORT:TCPPORT
+      - UDPPORT:UDPPORT/udp
+    restart: unless-stopped
