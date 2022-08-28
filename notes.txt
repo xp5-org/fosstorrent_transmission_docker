@@ -1,0 +1,176 @@
+A) new startup no existing transmissions
+1) get xml file
+2) parse URL for each torrent
+3) for each 100 torrents, make transmission-docker-0/1/2/3 etc 
+4) add link using transmission-remote in docker container 
+ # transmission-remote -a "http://releases.ubuntu.com/16.10/ubuntu-16.10-desktop-amd64.iso.torrent"
+
+5) get status like this:
+user@server:~/transmission/client01$ sudo docker exec -it 7c /bin/bash
+root@7cc59fe24d1b:/# transmission-remote -n 'username:password' -l
+    ID   Done       Have  ETA           Up    Down  Ratio  Status       Name
+     1   100%   133.7 MB  Done         0.0     0.0    0.0  Idle         LibreELEC-RK3399.arm-10.0.1-orangepi.img.gz
+     2   100%    2.22 GB  Done         0.0     0.0    8.5  Idle         Fedora-Cinnamon-Live-x86_64-36
+     3   100%    1.51 GB  Done         0.0     0.0    0.0  Idle         GeckoLinux_ROLLING_Plasma.x86_64-999.210509.0.iso
+     4   100%   51.60 MB  Done         0.0     0.0    0.0  Idle         KeePassXC-2.7.1-Win64-LegacyWindows.zip
+     5   100%   61.19 MB  Done         0.0     0.0    0.0  Idle         Godot_v3.4.4-stable_mono_win32.zip
+     6   100%   62.47 MB  Done         0.0     0.0    0.1  Idle         FlightGear-2020.3.13-web.exe
+     7   100%   120.3 MB  Done         0.0     0.0    0.0  Idle         LibreELEC-H3.arm-10.0.1-bananapi-m2p.img.gz
+     8   100%   120.1 MB  Done         0.0     0.0    0.1  Idle         FlightGear-2020.3.13-x86_64.AppImage
+     9   100%    1.22 GB  Done         0.0     0.0    0.5  Idle         Fedora-IoT-IoT-ostree-x86_64-33-20201020.0.iso
+    10   100%    4.07 GB  Done         0.0     0.0    0.7  Idle         FreeBSD-13.1-RELEASE-powerpc-powerpc64le-dvd1.iso
+    11   100%   626.3 MB  Done         0.0     0.0    0.1  Idle         FreeCADLibs_12.5.3_x64_VC17.7z
+
+
+## have to track the file by its non permanent list position id, no torrent ID listed :( 
+
+
+
+#############################################
+### getting detailed torrent info command ###
+### for each ID listed in prevous command ###
+### run this and get 'hash' value this is ###
+#############################################
+
+root@7cc59fe24d1b:/# transmission-remote -n 'username:password' -t1 -i
+NAME
+  Id: 1
+  Name: LibreELEC-RK3399.arm-10.0.1-orangepi.img.gz
+  Hash: 5e84bc1096983a637639db0e81a115e60ae6dd85
+  Magnet: magnet:?xt=urn:btih:5e84bc1096983a637639db0e81a115e60ae6dd85&dn=LibreELEC-RK3399.arm-10.0.1-orangepi.img.gz&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ffosstorrents.com%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&ws=http%3A%2F%2Freleases.libreelec.tv%2FLibreELEC-RK3399.arm-10.0.1-orangepi.img.gz&ws=http%3A%2F%2Ffosstorrents.com%2Fdirect-links%2FLibreELEC-RK3399.arm-10.0.1-orangepi.img.gz
+  Labels:
+
+TRANSFER
+  State: Idle
+  Location: /downloads/complete
+  Percent Done: 100%
+  ETA: 0 seconds (0 seconds)
+  Download Speed: 0 kB/s
+  Upload Speed: 0 kB/s
+  Have: 133.7 MB (133.7 MB verified)
+  Availability: 100%
+  Total size: 133.7 MB (133.7 MB wanted)
+  Downloaded: None
+  Uploaded: None
+  Ratio: None
+  Corrupt DL: None
+  Peers: connected to 0, uploading to 0, downloading from 0
+  Web Seeds: downloading from 0 of 2 web seeds
+
+HISTORY
+  Date added:       Thu Aug  4 11:34:10 2022
+  Date started:     Sun Aug 28 20:41:05 2022
+  Seeding Time:     19 minutes (1191 seconds)
+
+ORIGINS
+  Date created: Tue Nov  9 09:28:23 2021
+  Public torrent: Yes
+  Comment: Unofficial LibreELEC 10.0.1 (Rockchip - Orange Pi RK3399) torrent created by FOSS Torrents. Published on https://fosstorrents.com
+  Creator: FOSS Torrents (https://fosstorrents.com/)
+  Piece Count: 1020
+  Piece Size: 128.0 KiB
+
+LIMITS & BANDWIDTH
+  Download Limit: Unlimited
+  Upload Limit: Unlimited
+  Ratio Limit: Default
+  Honors Session Limits: Yes
+  Peer limit: 50
+  Bandwidth Priority: Normal
+
+
+
+
+shorter example:
+user@server:~/transmission/client01$ sudo docker exec -it 7c /usr/bin/transmission-remote -n 'username:password' -t1 -i | grep Name
+  Name: LibreELEC-RK3399.arm-10.0.1-orangepi.img.gz
+user@server:~/transmission/client01$ sudo docker exec -it 7c /usr/bin/transmission-remote -n 'username:password' -t1 -i | grep Hash
+  Hash: 5e84bc1096983a637639db0e81a115e60ae6dd85
+
+
+time through docker remote:
+# user@server:~/transmission/client01$ time for i in {1..20}; do sudo docker exec -it 7c /usr/bin/transmission-remote -n 'username:password' -t$i -i | grep Hash; done
+  Hash: 5e84bc1096983a637639db0e81a115e60ae6dd85
+  Hash: 6ab6ff46960d60928cecab9c3329678d7f4cd92f
+  Hash: 56a604b2252978dd994b247bbfbf5b1a535a1353
+  Hash: bb5622ff12a297f671d76555dcc195f79204a438
+  Hash: e027976599791f5fac09d7f51b65b6f98995e68c
+  Hash: a4e0fc801d4de7af1592907697386b9f78f503f9
+  Hash: f56d8e6a49634aaa5918043cbfe7793231d50b20
+  Hash: 88fe2e1b65ae77d62144f2b7397e95dff038186b
+  Hash: 6e9e227e23019a9dc583aba2abe57051afe90a8a
+  Hash: a215e4045513315abf2c0a08c0e56b35d2cc6ea4
+  Hash: f83471482d6869c62dda086e0e0c22e150ab7319
+  Hash: 5e30db7160f67a1c2ff9295b13bc9ab9b56793c5
+  Hash: 7ecdc74613f9ddf20135f01b37213d79755938b0
+  Hash: ebf2b9171dfa1b08d1ce96a65620d16955104309
+  Hash: 71ce509c8eef8580aeddd7b619338f2e827f32ab
+  Hash: 63b9e6ac7630d075374b22305abb7248bedae2b6
+  Hash: 68921062383064f2222e70710241a9b738a65e58
+  Hash: 2289b9b7e41b08008463145c4385b67ff85fb668
+  Hash: a3400cd279d83b39a96422bde0f075bda5ae7143
+  Hash: 27621699175a68e177e048d16c4dca6b495f86d6
+
+real    0m4.293s
+user    0m0.979s
+sys     0m0.662s
+
+conclusion - docker exec is slow, adds on significant time delay
+
+
+however inside the docker container:
+# root@7cc59fe24d1b:/# time for i in {1..20} ; do transmission-remote -n 'username:password' -t$i -i ; done | grep Hash
+  Hash: 5e84bc1096983a637639db0e81a115e60ae6dd85
+  Hash: 6ab6ff46960d60928cecab9c3329678d7f4cd92f
+  Hash: 56a604b2252978dd994b247bbfbf5b1a535a1353
+  Hash: bb5622ff12a297f671d76555dcc195f79204a438
+  Hash: e027976599791f5fac09d7f51b65b6f98995e68c
+  Hash: a4e0fc801d4de7af1592907697386b9f78f503f9
+  Hash: f56d8e6a49634aaa5918043cbfe7793231d50b20
+  Hash: 88fe2e1b65ae77d62144f2b7397e95dff038186b
+  Hash: 6e9e227e23019a9dc583aba2abe57051afe90a8a
+  Hash: a215e4045513315abf2c0a08c0e56b35d2cc6ea4
+  Hash: f83471482d6869c62dda086e0e0c22e150ab7319
+  Hash: 5e30db7160f67a1c2ff9295b13bc9ab9b56793c5
+  Hash: 7ecdc74613f9ddf20135f01b37213d79755938b0
+  Hash: ebf2b9171dfa1b08d1ce96a65620d16955104309
+  Hash: 71ce509c8eef8580aeddd7b619338f2e827f32ab
+  Hash: 63b9e6ac7630d075374b22305abb7248bedae2b6
+  Hash: 68921062383064f2222e70710241a9b738a65e58
+  Hash: 2289b9b7e41b08008463145c4385b67ff85fb668
+  Hash: a3400cd279d83b39a96422bde0f075bda5ae7143
+  Hash: 27621699175a68e177e048d16c4dca6b495f86d6
+
+real    0m0.211s
+user    0m0.140s
+sys     0m0.056s
+
+
+###either need to make scipt (py or shell) for container htat does the following:
+1) accept range of IDs to return hash list
+2) run and return full range even if we only need a few since its so fast
+
+
+
+testing for 100 full list timing:
+# root@7cc59fe24d1b:/# time for i in {1..100} ; do transmission-remote -n 'username:password' -t$i -i ; done | grep Hash | wc -l
+100
+
+real    0m1.019s
+user    0m0.618s
+sys     0m0.307s
+
+
+1 second of 100% cpu busy for query to get full details on all torrents .. not just hash, could parse out name/hash/filename to csv or json
+could run this once every infrequent time period to get full list or run on startup
+
+
+user@server:~/transmission/client01$ time for i in {1..100}; do sudo docker exec -it 7c /usr/bin/transmission-remote -n 'username:password' -t$i -i | grep Hash; done | wc -l
+100
+
+real    0m15.582s
+user    0m4.708s
+sys     0m3.259s
+
+
+througy docker exec it is 15 seconds of 100% cpu busy per 100 queries
