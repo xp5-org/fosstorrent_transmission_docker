@@ -1,0 +1,252 @@
+https://github.com/moby/moby/issues/25981
+
+
+
+ERROR: Encountered errors while bringing up the project.
+^C
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo docker container ls -a
+CONTAINER ID   IMAGE                                     COMMAND   CREATED          STATUS    PORTS     NAMES
+b69c7181348b   lscr.io/linuxserver/transmission:latest   "/init"   12 seconds ago   Created             transmission
+a72ec8b7f0d1   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission11
+4ff604d5e416   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission8
+11fd5fd165b6   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             11fd5fd165b6_transmission1
+27d7ac6f6025   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission10
+af7ee4aa1d3a   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission9
+6f72a82784e6   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             6f72a82784e6_transmission2
+ba58db493289   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission4
+3565237f8c7b   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission7
+1c4bbfc1d960   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission3
+f7a930ce4368   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission5
+b5b04e248249   lscr.io/linuxserver/transmission:latest   "/init"   2 minutes ago    Created             transmission6
+user@ubnt:/mnt/nas/foss_transmission_tool$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+b69c7181348b0e58208ccc9389a3d10e2fd411276c60f87e3b33e51f0b991593
+a72ec8b7f0d13bdfaa4d37031b9cf7a6509afb372eaf082d46d57a60b64eb5be
+4ff604d5e416d6ec0893b33910cde94408ab54fb493d3d9422d985e55c38e77e
+11fd5fd165b6e83c108a8d2a8f13338af333127df1a944886b30b8f2e7ac34a0
+27d7ac6f60259154c85ece5b515cf2e94dbbf1d7ecea1b9bf2692c94d2bca56b
+af7ee4aa1d3af00af905dcd7c1b9c08e475f29bda2104481b3670be01fdeedb0
+6f72a82784e6876d71d3fd996087df236d08fcf94db9af4bef40b50c6a3397a7
+ba58db49328993623b4ca8f7bcdc55527620802e1bad1dfc17888eb6936c68eb
+3565237f8c7b7968eefa3d974aa168047a9dabbe48fbac735407ba98b89b292c
+1c4bbfc1d9607e05745513231ecbd39bef437d0d5c9d46302a3260e83e8a9c17
+f7a930ce43685f53fbe9dcb4a3659eb5aa55d8dd8cdec0cd522be7d5bc646120
+b5b04e248249d8dcb96ff76f1dfa4f54cf71ea68d5633978803b92c1ca2e8fea
+
+Total reclaimed space: 0B
+user@ubnt:/mnt/nas/foss_transmission_tool$ docker ps -a -q
+user@ubnt:/mnt/nas/foss_transmission_tool$ python3 run_compose.py
+/home/user/torrent_rootdir/1/docker-compose.yml
+/home/user/torrent_rootdir/2/docker-compose.yml
+user@ubnt:/mnt/nas/foss_transmission_tool$ Creating transmission ...
+Creating transmission ... error
+
+ERROR: for transmission  Cannot create container for service transmission: Conflict. The container name "/transmission" is already in use by container "b986a49b8ac5d66acff6347fc46dc36f485dc6ddd52d06984743b7d06cd6ce1f". You have to remove (or rename) that container to be able to reuse that name.
+
+ERROR: for transmission  Cannot create container for service transmission: Conflict. The container name "/transmission" is already in use by container "b986a49b8ac5d66acff6347fc46dc36f485dc6ddd52d06984743b7d06cd6ce1f". You have to remove (or rename) that container to be able to reuse that name.
+ERROR: Encountered errors while bringing up the project.
+Creating transmission ... error
+
+ERROR: for transmission  Cannot start service transmission: driver failed programming external connectivity on endpoint transmission (dc50f8abaacb25212dfa6a1fdebabf9929dadf25b62438dba0c512944e8bad93): Error starting userland proxy: listen tcp4 0.0.0.0:51412: bind: address already in use
+
+ERROR: for transmission  Cannot start service transmission: driver failed programming external connectivity on endpoint transmission (dc50f8abaacb25212dfa6a1fdebabf9929dadf25b62438dba0c512944e8bad93): Error starting userland proxy: listen tcp4 0.0.0.0:51412: bind: address already in use
+ERROR: Encountered errors while bringing up the project.
+
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo netstat -pna | grep 51412
+sudo: netstat: command not found
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo apt-get install netstat
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+E: Unable to locate package netstat
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo apt-get install net-tools
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  net-tools
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 204 kB of archives.
+After this operation, 819 kB of additional disk space will be used.
+Get:1 http://us.archive.ubuntu.com/ubuntu jammy/main amd64 net-tools amd64 1.60+git20181103.0eebece-1ubuntu5 [204 kB]
+Fetched 204 kB in 2s (103 kB/s)
+Selecting previously unselected package net-tools.
+(Reading database ... 74081 files and directories currently installed.)
+Preparing to unpack .../net-tools_1.60+git20181103.0eebece-1ubuntu5_amd64.deb ...
+Unpacking net-tools (1.60+git20181103.0eebece-1ubuntu5) ...
+Setting up net-tools (1.60+git20181103.0eebece-1ubuntu5) ...
+Processing triggers for man-db (2.10.2-1) ...
+Scanning processes...
+Scanning linux images...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo netstat -pna | grep 51412
+tcp        0      0 0.0.0.0:51412           0.0.0.0:*               LISTEN      1894/docker-proxy
+tcp6       0      0 :::51412                :::*                    LISTEN      1901/docker-proxy
+udp        0      0 0.0.0.0:51412           0.0.0.0:*                           1922/docker-proxy
+udp6       0      0 :::51412                :::*                                1931/docker-proxy
+user@ubnt:/mnt/nas/foss_transmission_tool$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+b986a49b8ac5d66acff6347fc46dc36f485dc6ddd52d06984743b7d06cd6ce1f
+
+Total reclaimed space: 0B
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo docker container ls
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo docker container ls -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+user@ubnt:/mnt/nas/foss_transmission_tool$ shutdown -h now
+Failed to set wall message, ignoring: Interactive authentication required.
+Failed to power off system via logind: Interactive authentication required.
+Failed to open initctl fifo: Permission denied
+Failed to talk to init daemon.
+user@ubnt:/mnt/nas/foss_transmission_tool$ sudo shutdown -r now
+login as: user
+user@192.168.1.243's password:
+Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-46-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Mon Aug 29 02:34:29 AM UTC 2022
+
+  System load:                      0.86328125
+  Usage of /:                       28.6% of 26.35GB
+  Memory usage:                     6%
+  Swap usage:                       0%
+  Processes:                        357
+  Users logged in:                  0
+  IPv4 address for br-073aca5b317f: 172.21.0.1
+  IPv4 address for br-07b2b543fdb5: 172.27.0.1
+  IPv4 address for br-2cfbd7366a19: 172.18.0.1
+  IPv4 address for br-37adc7d1b8f0: 192.168.128.1
+  IPv4 address for br-3b4e609ed984: 172.19.0.1
+  IPv4 address for br-3d7d0d816708: 172.30.0.1
+  IPv4 address for br-3eafff119ae2: 172.28.0.1
+  IPv4 address for br-401e608124fd: 172.26.0.1
+  IPv4 address for br-490365b699cb: 192.168.32.1
+  IPv4 address for br-5331d9b460f7: 192.168.144.1
+  IPv4 address for br-60d5e8035530: 172.24.0.1
+  IPv4 address for br-6ed43fe26c22: 192.168.64.1
+  IPv4 address for br-8905f6bf3181: 172.29.0.1
+  IPv4 address for br-a053e01ce345: 192.168.112.1
+  IPv4 address for br-aee594f1a705: 192.168.80.1
+  IPv4 address for br-b87dcf7e34c2: 192.168.96.1
+  IPv4 address for br-c25b1967b507: 172.25.0.1
+  IPv4 address for br-d18d3727be1d: 172.31.0.1
+  IPv4 address for br-da845f995846: 172.23.0.1
+  IPv4 address for br-e42e349434ac: 172.20.0.1
+  IPv4 address for br-f0432c06c777: 192.168.48.1
+  IPv4 address for br-f3664171ea3f: 192.168.16.1
+  IPv4 address for br-f7ece6f5863e: 172.22.0.1
+  IPv4 address for docker0:         172.17.0.1
+  IPv4 address for enp0s3:          192.168.1.243
+
+
+0 updates can be applied immediately.
+
+
+Last login: Mon Aug 29 02:24:12 2022 from 192.168.1.120
+user@ubnt:~$ sudo netstat -pna | grep 51412
+[sudo] password for user:
+tcp        0      0 0.0.0.0:51412           0.0.0.0:*               LISTEN      1955/docker-proxy
+tcp6       0      0 :::51412                :::*                    LISTEN      1966/docker-proxy
+udp        0      0 0.0.0.0:51412           0.0.0.0:*                           2110/docker-proxy
+udp6       0      0 :::51412                :::*                                2140/docker-proxy
+user@ubnt:~$ docker network ls
+NETWORK ID     NAME         DRIVER    SCOPE
+a053e01ce345   1_default    bridge    local
+37adc7d1b8f0   2_default    bridge    local
+b87dcf7e34c2   3_default    bridge    local
+3d7d0d816708   4_default    bridge    local
+6ed43fe26c22   5_default    bridge    local
+f3664171ea3f   6_default    bridge    local
+d18d3727be1d   7_default    bridge    local
+f0432c06c777   8_default    bridge    local
+aee594f1a705   9_default    bridge    local
+5331d9b460f7   10_default   bridge    local
+490365b699cb   11_default   bridge    local
+595f2ee8b263   bridge       bridge    local
+5d68bdc80998   host         host      local
+00be73c4184b   none         null      local
+user@ubnt:~$ docker network prune
+WARNING! This will remove all custom networks not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Networks:
+9_default
+11_default
+10_default
+5_default
+2_default
+4_default
+3_default
+1_default
+7_default
+8_default
+6_default
+
+user@ubnt:~$ sudo netstat -pna | grep 51412
+tcp        0      0 0.0.0.0:51412           0.0.0.0:*               LISTEN      1955/docker-proxy
+tcp6       0      0 :::51412                :::*                    LISTEN      1966/docker-proxy
+udp        0      0 0.0.0.0:51412           0.0.0.0:*                           2110/docker-proxy
+udp6       0      0 :::51412                :::*                                2140/docker-proxy
+user@ubnt:~$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+595f2ee8b263   bridge    bridge    local
+5d68bdc80998   host      host      local
+00be73c4184b   none      null      local
+user@ubnt:~$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+user@ubnt:~$ sudo service docker stop
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+user@ubnt:~$ sudo netstat -pna | grep 51412
+user@ubnt:~$ sudo service docker start
+user@ubnt:~$ sudo netstat -pna | grep 51412
+tcp        0      0 0.0.0.0:51412           0.0.0.0:*               LISTEN      7286/docker-proxy
+tcp6       0      0 :::51412                :::*                    LISTEN      7293/docker-proxy
+udp        0      0 0.0.0.0:51412           0.0.0.0:*                           7351/docker-proxy
+udp6       0      0 :::51412                :::*                                7360/docker-proxy
+user@ubnt:~$ rm /var/lib/docker/network/files/^C
+user@ubnt:~$ sudo systemctl stop docker && sudo rm /var/lib/docker/network/files/* && sudo systemctl start docker
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+rm: cannot remove '/var/lib/docker/network/files/*': No such file or directory
+user@ubnt:~$ sudo systemctl stop docker && sudo rm /var/lib/docker/network/files/* && sudo sys^Cmctl start docker
+user@ubnt:~$ cd /var/lib/docker/
+-bash: cd: /var/lib/docker/: Permission denied
+user@ubnt:~$ ls
+docker-compose.yml  snap  torrent_rootdir
+user@ubnt:~$ sudo cd /var/lib/docker/
+sudo: cd: command not found
+sudo: "cd" is a shell built-in command, it cannot be run directly.
+sudo: the -s option may be used to run a privileged shell.
+sudo: the -D option may be used to run a command in a specific directory.
+user@ubnt:~$ sudo ls /var/lib/docker/
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+user@ubnt:~$ sudo  ls /var/lib/docker/network
+files
+user@ubnt:~$ sudo  ls /var/lib/docker/network/files
+local-kv.db
+user@ubnt:~$ sudo su
+root@ubnt:/home/user# systemctl stop docker && rm /var/lib/docker/network/files/* && systemctl start docker
+Warning: Stopping docker.service, but it can still be activated by:
+  docker.socket
+root@ubnt:/home/user# exit
+exit
+user@ubnt:~$ sudo netstat -pna | grep 51412
+user@ubnt:~$

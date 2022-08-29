@@ -14,8 +14,10 @@ def make_dirs(num):
         return
     itx = 1
     while itx <= num:
-        path = os.path.join(root_dir, str(itx))
-        os.mkdir(path)
+        basepath = os.path.join(root_dir, str(itx))
+        watchpath = os.path.join(root_dir, str(itx), 'watch')
+        os.mkdir(basepath)
+        os.mkdir(watchpath)
         print("dir '% s' created" % itx)
         itx += 1
 
@@ -36,6 +38,7 @@ def make_config_files(num):
         print(itx)
         path = os.path.join(root_dir, str(itx))
         ymlpath = os.path.join(root_dir, str(itx), 'docker-compose.yml')
+        watchpath = os.path.join(path, 'watch')
         newrpcport = str(rpcport + itx)
         newtcpport = str(tcpport + itx)
         newudpport = str(udpport + itx)
@@ -43,15 +46,18 @@ def make_config_files(num):
         print('new tcp port is', str(newtcpport))
         print('new tcp port is', str(newudpport))
         rpcportstring = str(newrpcport)
-        new_container_name = container_name + str(itx)
+        new_container_name = str(container_name + str(itx))
+        print('new container name is: ', new_container_name)
+        print('new watch dir is: ', watchpath)
         filedata2 = filedata.replace('RPCPORT', rpcportstring)
         filedata3 = filedata2.replace('TCPPORT', str(newtcpport))
         filedata4 = filedata3.replace('UDPPORT', str(newudpport))
         filedata5 = filedata4.replace('UNIQUEROOTPATH', path)
-        filedata6 = filedata5.replace('SHAREDROOTPATH', download_dir)
-        filedata7 = filedata6.replace('CONTAINERNAME', new_container_name)
+        filedata6 = filedata5.replace('UNIQUEWATCHPATH', watchpath)
+        filedata7 = filedata6.replace('SHAREDROOTPATH', download_dir)
+        filedata8 = filedata7.replace('CONTAINERNAME', new_container_name)
         with open(ymlpath, 'w') as outputfile:
-            outputfile.write(filedata7)
+            outputfile.write(filedata8)
             outputfile.close()
             print('wrote a file')
             ymlpathlist.append(ymlpath)
@@ -65,5 +71,5 @@ def make_config_files(num):
 
 
 
-make_dirs(11)
-make_config_files(11)
+make_dirs(12)
+make_config_files(12)
