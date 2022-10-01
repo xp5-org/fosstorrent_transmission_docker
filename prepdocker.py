@@ -1,8 +1,10 @@
 import os
 import pickle
 
-root_dir = "/home/user/torrent_rootdir"
-download_dir = "/home/user/torrent_rootdir/download_complete"
+#root_dir = "/home/user/torrent_rootdir"
+root_dir = "/mnt/nas/torrent_rootdir"
+#download_dir = "/home/user/torrent_rootdir/download_complete"
+download_dir = "/mnt/nas/torrent_rootdir/download_complete"
 master_compose_file = "/mnt/nas/foss_transmission_tool/docker-compose-example.txt"
 
 
