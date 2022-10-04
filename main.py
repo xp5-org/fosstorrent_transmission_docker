@@ -5,6 +5,10 @@ import socket
 import pickle
 import subprocess
 import time
+# for update checking#
+import requests
+import datetime
+from dateutil.parser import parse as parsedate
 
 # path settings , need to improve this
 root_dir = "/fourdiskpool/fosstorrent_root"
@@ -15,9 +19,51 @@ torrent_base_path = "/fourdiskpool/fosstorrent_root"
 max_torrents = 200
 socket.setdefaulttimeout(3)
 
+from threading import *
+import _thread
+import threading
+import time
+import random
+
+
+def getnumber():
+    # this is to test the threading class
+    val = random.randint(0, 555)
+    time.sleep(2)
+    return val
+
+
+class threadmanager(Thread):
+    def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
+        Thread.__init__(self, group, target, name, args, kwargs, daemon=daemon)
+        self._return = None
+
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args, **self._kwargs)
+
+    def status(self):
+        # print (self)
+        #print("Thread Active?", self.is_alive())
+        return self.is_alive()
+
+    def join(self):
+        Thread.join(self)
+        return self._return
+
+
+
 
 def get_torrent_list():
-    urllib.request.urlretrieve("https://fosstorrents.com/feed/torrents.xml", "foss_feed.txt")
+    filename = "foss_feed.txt"
+    print("{:%Y_%m_%d}".format(datetime.now()))
+    urllib.request.urlretrieve("https://fosstorrents.com/feed/torrents.xml", filename)
+
+def get_rss_headerdate():
+    r = requests.head("https://fosstorrents.com/feed/torrents.xml")
+    url_time = r.headers['last-modified']
+    url_date = parsedate(url_time)
+    return url_date
 
 def process_torrent_list():
     # for each line in torrents.xml , parse out files ending in .torrent
@@ -155,9 +201,9 @@ def run_compose():
 
 
 # basic steps needed in-order , need to build into class structure 
-get_torrent_list()
-process_torrent_list()
-make_dirs(6)
-make_config_files(6)
-download_torrent_files()
+#get_torrent_list()
+#process_torrent_list()
+#make_dirs(6)
+#make_config_files(6)
+#download_torrent_files()
 #run_compose()
