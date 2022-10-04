@@ -29,8 +29,8 @@ import random
 def getnumber():
     # this is to test the threading class
     val = random.randint(0, 555)
-    time.sleep(2)
-    return val
+    time.sleep(12)
+    return str(val)
 
 
 class threadmanager(Thread):
@@ -45,7 +45,10 @@ class threadmanager(Thread):
     def status(self):
         # print (self)
         #print("Thread Active?", self.is_alive())
-        return self.is_alive()
+        if self.is_alive():
+            return True
+        else:
+            return False
 
     def join(self):
         Thread.join(self)

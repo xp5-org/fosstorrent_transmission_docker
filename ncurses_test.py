@@ -34,16 +34,9 @@ def openSubWindow(win):
     subwin.addstr(8, 20, "Enter X to exit sub-window")
     subwin.addstr(2, 12, "this might take awhile")
     subwin.refresh()
-    #thread1 = threading.Thread(target=get_rss_headerdate)
-    #thread1.start()
-
-    twrv = threadmanager(target=get_rss_headerdate)
-
+    twrv = threadmanager(target=getnumber) # for testing only
+    #twrv = threadmanager(target=get_rss_headerdate)
     twrv.start()
-
-    #d = get_rss_headerdate()
-    #subwin.addstr(5, 20, "header check complete, date is : ")
-    #subwin.addstr(4, 20, str(d))
     subwin.addstr(3, 3, "waiting for check: ")
     subwin.refresh()
     while 1:
@@ -58,14 +51,21 @@ def openSubWindow(win):
                 if instr.upper() == 'X':
                     break
         time.sleep(1)
-        threadstatus = str(twrv.status())
+        threadstatus = twrv.status()
+        #threadstatus = False
+        #print("inloop")
         if threadstatus is True:
-            subwin.addstr(3, 22, threadstatus)
-        else:
-            header_date = str(twrv.join())
+            subwin.addstr(3, 22, "waiting " + str(threadstatus))
+            subwin.refresh()
+            #print("istrue")
+        if threadstatus is False:
+            #header_date = str(twrv.join())
+            header_date = "ehh"
             subwin.addstr(4, 4, "XML feed last modified date: " + header_date)
-            subwin.addstr(3, 22, threadstatus)
-        subwin.refresh()
+            subwin.addstr(3, 22, "waiting " + str(threadstatus))
+            subwin.refresh()
+            #print("isfalse")
+
 
     return subwin
 
